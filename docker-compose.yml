@@ -43,6 +43,12 @@ x-n8n: &service-n8n
     - N8N_DIAGNOSTICS_CONFIG_FRONTEND=${N8N_DIAGNOSTICS_CONFIG_FRONTEND}
     - N8N_DIAGNOSTICS_CONFIG_BACKEND=${N8N_DIAGNOSTICS_CONFIG_BACKEND}
 
+    # ---- external task runners ----
+    - N8N_RUNNERS_ENABLED=${N8N_RUNNERS_ENABLED}
+    - N8N_RUNNERS_MODE=${N8N_RUNNERS_MODE}
+    - N8N_RUNNERS_AUTH_TOKEN=${N8N_RUNNERS_AUTH_TOKEN}
+    - N8N_NATIVE_PYTHON_RUNNER=${N8N_NATIVE_PYTHON_RUNNER}
+
     # ---- URLs (behind reverse proxy) ----
     - N8N_HOST=${N8N_HOST}
     - N8N_PROTOCOL=${N8N_PROTOCOL}
@@ -64,6 +70,18 @@ x-n8n: &service-n8n
 
     # ---- timezone ----
     - TZ=${TZ}
+  env_file:
+    - path: .env
+      required: true
+  logging: *default-logging
+
+x-task-runners: &service-task-runners
+  image: n8nio/n8n:latest
+  networks: ['main']
+  restart: unless-stopped
+  environment:
+    - N8N_RUNNERS_AUTH_TOKEN=${N8N_RUNNERS_AUTH_TOKEN}
+    - N8N_RUNNERS_AUTO_SHUTDOWN_TIMEOUT=${N8N_RUNNERS_AUTO_SHUTDOWN_TIMEOUT}
   env_file:
     - path: .env
       required: true
@@ -149,6 +167,12 @@ services:
       ollama-pull-gpt-oss-gpu:
         condition: service_completed_successfully
     logging: *default-logging
+
+  task-runners:
+    <<: *service-task-runners
+    container_name: n8n-runners
+    depends_on:
+      - n8n
 
   qdrant:
     image: qdrant/qdrant

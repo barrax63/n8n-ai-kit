@@ -1,6 +1,6 @@
 # n8n-AI-kit
 
-**n8n-AI-kit** is an open-source template that quickly sets up a local AI environment featuring n8n, Ollama, Qdrant and PostgreSQL., 
+**n8n-AI-kit** is an open-source template that quickly sets up a local AI environment featuring n8n, Ollama, Qdrant and PostgreSQL.
 
 ![n8n.io - Screenshot](assets/n8n-demo.gif)
 
