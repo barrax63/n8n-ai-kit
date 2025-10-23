@@ -198,14 +198,14 @@ services:
 
   # ---- PULL JOBS (per profile) ----
 
-  ollama-pull-default-model-cpu:
+  ollama-pull-llm-model-cpu:
     profiles: ["cpu"]
     <<: *init-ollama
     depends_on:
       ollama-cpu:
         condition: service_started
 
-  ollama-pull-default-model-gpu:
+  ollama-pull-llm-model-gpu:
     profiles: ["gpu-nvidia"]
     <<: *init-ollama
     depends_on:
@@ -231,7 +231,7 @@ services:
       # Ensure Ollama is up and the model was pulled before n8n starts
       ollama-gpu:
         condition: service_healthy
-      ollama-pull-default-model-gpu:
+      ollama-pull-llm-model-gpu:
         condition: service_completed_successfully
     logging: *default-logging
 
@@ -252,7 +252,7 @@ services:
       # Ensure Ollama is up and the model was pulled before n8n starts
       ollama-cpu:
         condition: service_healthy
-      ollama-pull-default-model-cpu:
+      ollama-pull-llm-model-cpu:
         condition: service_completed_successfully
     logging: *default-logging
 
