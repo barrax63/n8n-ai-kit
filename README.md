@@ -46,7 +46,7 @@ cp .env.example .env # you should update secrets and passwords inside
 git clone https://github.com/barrax63/n8n-ai-kit.git
 cd n8n-ai-kit
 cp .env.example .env # you should update secrets and passwords inside
-docker compose --profile gpu-nvidia up
+docker compose --profile gpu-nvidia up -d
 ```
 
 > [!NOTE]
@@ -59,7 +59,7 @@ docker compose --profile gpu-nvidia up
 git clone https://github.com/barrax63/n8n-ai-kit.git
 cd n8n-ai-kit
 cp .env.example .env # you should update secrets and passwords inside
-docker compose --profile cpu up
+docker compose --profile cpu up -d
 ```
 
 ## ⚡️ Quick start and usage
@@ -81,14 +81,14 @@ language model and Qdrant as your vector store.
 
 ```bash
 docker compose --profile gpu-nvidia pull
-docker compose create && docker compose --profile gpu-nvidia up
+docker compose create && docker compose --profile gpu-nvidia up -d
 ```
 
 * ### For Non-GPU setups:
 
 ```bash
 docker compose --profile cpu pull
-docker compose create && docker compose --profile cpu up
+docker compose create && docker compose --profile cpu up -d
 ```
 
 ## 👓 Recommended reading

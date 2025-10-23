@@ -73,6 +73,11 @@ x-n8n: &service-n8n
   env_file:
     - path: .env
       required: true
+  healthcheck:
+    test: ["CMD", "wget", "-qO-", "http://localhost:5678/healthz"]
+    interval: 10s
+    timeout: 5s
+    retries: 30
   logging: *default-logging
 
 x-task-runners: &service-task-runners
@@ -89,8 +94,10 @@ x-task-runners: &service-task-runners
 
 x-ollama: &service-ollama
   image: ollama/ollama:latest
-  container_name: ollama
-  networks: ['main']
+  networks:
+    main:
+      aliases:
+        - ollama
   restart: unless-stopped
   ports:
     - "127.0.0.1:11434:11434"
@@ -141,41 +148,14 @@ services:
     volumes:
       - postgres_storage:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -t 1 -q']
       interval: 5s
       timeout: 5s
       retries: 10
     logging: *default-logging
 
-  n8n:
-    <<: *service-n8n
-    hostname: n8n
-    container_name: n8n
-    restart: unless-stopped
-    # bind editor on localhost if you’ll front it with a reverse proxy like Caddy/Traefik
-    ports:
-      - "127.0.0.1:5678:5678"
-    volumes:
-      - n8n_storage:/home/node/.n8n
-      - ./shared:/data/shared
-    depends_on:
-      postgres:
-        condition: service_healthy
-      # Ensure Ollama is up and the model was pulled before n8n starts
-      ollama-gpu:
-        condition: service_healthy
-      ollama-pull-default-model-gpu:
-        condition: service_completed_successfully
-    logging: *default-logging
-
-  task-runners:
-    <<: *service-task-runners
-    container_name: n8n-runners
-    depends_on:
-      - n8n
-
   qdrant:
-    image: qdrant/qdrant
+    image: qdrant/qdrant:latest
     hostname: qdrant
     container_name: qdrant
     networks: ['main']
@@ -201,11 +181,13 @@ services:
   ollama-cpu:
     profiles: ["cpu"]
     <<: *service-ollama
+    container_name: ollama
 
   # NVIDIA GPU (target)
   ollama-gpu:
     profiles: ["gpu-nvidia"]
     <<: *service-ollama
+    container_name: ollama
     deploy:
       resources:
         reservations:
@@ -229,3 +211,65 @@ services:
     depends_on:
       ollama-gpu:
         condition: service_started
+
+  # ---- n8n (per profile) ----
+
+  # GPU profile n8n
+  n8n-gpu:
+    <<: *service-n8n
+    container_name: n8n
+    profiles: ["gpu-nvidia"]
+    hostname: n8n
+    ports:
+      - "0.0.0.0:5678:5678"
+    volumes:
+      - n8n_storage:/home/node/.n8n
+      - ./shared:/data/shared
+    depends_on:
+      postgres:
+        condition: service_healthy
+      # Ensure Ollama is up and the model was pulled before n8n starts
+      ollama-gpu:
+        condition: service_healthy
+      ollama-pull-default-model-gpu:
+        condition: service_completed_successfully
+    logging: *default-logging
+
+  # CPU profile n8n
+  n8n-cpu:
+    <<: *service-n8n
+    container_name: n8n
+    profiles: ["cpu"]
+    hostname: n8n
+    ports:
+      - "0.0.0.0:5678:5678"
+    volumes:
+      - n8n_storage:/home/node/.n8n
+      - ./shared:/data/shared
+    depends_on:
+      postgres:
+        condition: service_healthy
+      # Ensure Ollama is up and the model was pulled before n8n starts
+      ollama-cpu:
+        condition: service_healthy
+      ollama-pull-default-model-cpu:
+        condition: service_completed_successfully
+    logging: *default-logging
+
+  # ---- TASK RUNNERS (per profile) ----
+
+  task-runners-gpu:
+    <<: *service-task-runners
+    container_name: n8n-runners
+    profiles: ["gpu-nvidia"]
+    depends_on:
+      n8n-gpu:
+        condition: service_healthy
+
+  task-runners-cpu:
+    <<: *service-task-runners
+    container_name: n8n-runners
+    profiles: ["cpu"]
+    depends_on:
+      n8n-cpu:
+        condition: service_healthy
