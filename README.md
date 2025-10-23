@@ -1,15 +1,8 @@
-# Self-hosted AI starter kit
+# n8n-AI-kit
 
-**Self-hosted AI Starter Kit** is an open-source Docker Compose template designed to swiftly initialize a comprehensive local AI and low-code development environment.
+**n8n-AI-kit** is an open-source template that quickly sets up a local AI environment featuring n8n, Ollama, Qdrant and PostgreSQL., 
 
-![n8n.io - Screenshot](https://raw.githubusercontent.com/n8n-io/self-hosted-ai-starter-kit/main/assets/n8n-demo.gif)
-
-Curated by <https://github.com/n8n-io>, it combines the self-hosted n8n
-platform with a curated list of compatible AI products and components to
-quickly get started with building self-hosted AI workflows.
-
-> [!TIP]
-> [Read the announcement](https://blog.n8n.io/self-hosted-ai/)
+![n8n.io - Screenshot](assets/n8n-demo.gif)
 
 ### What’s included
 
@@ -40,8 +33,8 @@ Engineering world, handles large amounts of data safely.
 ### Cloning the Repository
 
 ```bash
-git clone https://github.com/n8n-io/self-hosted-ai-starter-kit.git
-cd self-hosted-ai-starter-kit
+git clone https://github.com/barrax63/n8n-ai-kit.git
+cd n8n-ai-kit
 cp .env.example .env # you should update secrets and passwords inside
 ```
 
@@ -50,8 +43,8 @@ cp .env.example .env # you should update secrets and passwords inside
 #### For Nvidia GPU users
 
 ```bash
-git clone https://github.com/n8n-io/self-hosted-ai-starter-kit.git
-cd self-hosted-ai-starter-kit
+git clone https://github.com/barrax63/n8n-ai-kit.git
+cd n8n-ai-kit
 cp .env.example .env # you should update secrets and passwords inside
 docker compose --profile gpu-nvidia up
 ```
@@ -60,71 +53,19 @@ docker compose --profile gpu-nvidia up
 > If you have not used your Nvidia GPU with Docker before, please follow the
 > [Ollama Docker instructions](https://github.com/ollama/ollama/blob/main/docs/docker.md).
 
-### For AMD GPU users on Linux
-
-```bash
-git clone https://github.com/n8n-io/self-hosted-ai-starter-kit.git
-cd self-hosted-ai-starter-kit
-cp .env.example .env # you should update secrets and passwords inside
-docker compose --profile gpu-amd up
-```
-
-#### For Mac / Apple Silicon users
-
-If you’re using a Mac with an M1 or newer processor, you can't expose your GPU
-to the Docker instance, unfortunately. There are two options in this case:
-
-1. Run the starter kit fully on CPU, like in the section "For everyone else"
-   below
-2. Run Ollama on your Mac for faster inference, and connect to that from the
-   n8n instance
-
-If you want to run Ollama on your mac, check the
-[Ollama homepage](https://ollama.com/)
-for installation instructions, and run the starter kit as follows:
-
-```bash
-git clone https://github.com/n8n-io/self-hosted-ai-starter-kit.git
-cd self-hosted-ai-starter-kit
-cp .env.example .env # you should update secrets and passwords inside
-docker compose up
-```
-
-##### For Mac users running OLLAMA locally
-
-If you're running OLLAMA locally on your Mac (not in Docker), you need to modify the OLLAMA_HOST environment variable
-
-1. Set OLLAMA_HOST to `host.docker.internal:11434` in your .env file. 
-2. Additionally, after you see "Editor is now accessible via: <http://localhost:5678/>":
-
-    1. Head to <http://localhost:5678/home/credentials>
-    2. Click on "Local Ollama service"
-    3. Change the base URL to "http://host.docker.internal:11434/"
-
 #### For everyone else
 
 ```bash
-git clone https://github.com/n8n-io/self-hosted-ai-starter-kit.git
-cd self-hosted-ai-starter-kit
+git clone https://github.com/barrax63/n8n-ai-kit.git
+cd n8n-ai-kit
 cp .env.example .env # you should update secrets and passwords inside
 docker compose --profile cpu up
 ```
 
 ## ⚡️ Quick start and usage
 
-The core of the Self-hosted AI Starter Kit is a Docker Compose file, pre-configured with network and storage settings, minimizing the need for additional installations.
-After completing the installation steps above, simply follow the steps below to get started.
-
-1. Open <http://localhost:5678/> in your browser to set up n8n. You’ll only
-   have to do this once.
-2. Open the included workflow:
-   <http://localhost:5678/workflow/srOnR8PAY3u4RSwb>
-3. Click the **Chat** button at the bottom of the canvas, to start running the workflow.
-4. If this is the first time you’re running the workflow, you may need to wait
-   until Ollama finishes downloading Llama3.2. You can inspect the docker
-   console logs to check on the progress.
-
-To open n8n at any time, visit <http://localhost:5678/> in your browser.
+The core of the n8n-AI-kit is a Docker Compose file, pre-configured with network and storage settings, minimizing the need for additional installations.
+After completing the installation steps above, simply visit <http://localhost:5678/> in your browser.
 
 With your n8n instance, you’ll have access to over 400 integrations and a
 suite of basic and advanced AI nodes such as
@@ -134,12 +75,6 @@ and [Information Extractor](https://docs.n8n.io/integrations/builtin/cluster-nod
 nodes. To keep everything local, just remember to use the Ollama node for your
 language model and Qdrant as your vector store.
 
-> [!NOTE]
-> This starter kit is designed to help you get started with self-hosted AI
-> workflows. While it’s not fully optimized for production environments, it
-> combines robust components that work well together for proof-of-concept
-> projects. You can customize it to meet your specific needs
-
 ## Upgrading
 
 * ### For Nvidia GPU setups:
@@ -147,13 +82,6 @@ language model and Qdrant as your vector store.
 ```bash
 docker compose --profile gpu-nvidia pull
 docker compose create && docker compose --profile gpu-nvidia up
-```
-
-* ### For Mac / Apple Silicon users
-
-```bash
-docker compose pull
-docker compose create && docker compose up
 ```
 
 * ### For Non-GPU setups:
@@ -205,7 +133,7 @@ your local n8n instance.
 
 ### Accessing local files
 
-The self-hosted AI starter kit will create a shared folder (by default,
+The n8n-AI-kit will create a shared folder (by default,
 located in the same directory) which is mounted to the n8n container and
 allows n8n to access files on disk. This folder within the n8n container is
 located at `/data/shared` -- this is the path you’ll need to use in nodes that
