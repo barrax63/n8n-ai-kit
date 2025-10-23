@@ -110,7 +110,7 @@ x-ollama: &service-ollama
     retries: 20
   logging: *default-logging
 
-# Init job that pulls the desired model (gpt-oss:20b)
+# Init job that pulls the desired model defined via the environment
 x-init-ollama: &init-ollama
   image: ollama/ollama:latest
   networks: ['main']
@@ -122,7 +122,7 @@ x-init-ollama: &init-ollama
     - TZ=${TZ}
   command:
     - "-c"
-    - "sleep 3; ollama pull gpt-oss:20b"
+    - "sleep 3; ollama pull ${OLLAMA_DEFAULT_MODEL}"
   logging: *default-logging
 
 services:
@@ -164,7 +164,7 @@ services:
       # Ensure Ollama is up and the model was pulled before n8n starts
       ollama-gpu:
         condition: service_healthy
-      ollama-pull-gpt-oss-gpu:
+      ollama-pull-default-model-gpu:
         condition: service_completed_successfully
     logging: *default-logging
 
@@ -216,14 +216,14 @@ services:
 
   # ---- PULL JOBS (per profile) ----
 
-  ollama-pull-gpt-oss-cpu:
+  ollama-pull-default-model-cpu:
     profiles: ["cpu"]
     <<: *init-ollama
     depends_on:
       ollama-cpu:
         condition: service_started
 
-  ollama-pull-gpt-oss-gpu:
+  ollama-pull-default-model-gpu:
     profiles: ["gpu-nvidia"]
     <<: *init-ollama
     depends_on:
