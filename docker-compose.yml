@@ -117,6 +117,7 @@ x-ollama: &service-ollama
     - OLLAMA_KV_CACHE_TYPE=${OLLAMA_KV_CACHE_TYPE}
     - OLLAMA_CONTEXT_LENGTH=${OLLAMA_CONTEXT_LENGTH}
     - OLLAMA_FLASH_ATTENTION=${OLLAMA_FLASH_ATTENTION}
+#    - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}
     - TZ=${TZ}
   healthcheck:
     test: ["CMD", "ollama", "list"]

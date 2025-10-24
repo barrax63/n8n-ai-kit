@@ -135,6 +135,16 @@ docker compose --profile cloud pull
 docker compose create && docker compose --profile cloud up -d
 ```
 
+### Subsequently adding a new LLM to Ollama
+
+```bash
+# From the host
+ollama list                 # see what’s installed
+ollama pull llama3.1:8b     # add a new model
+ollama pull gemma3:4b
+ollama run llama3.1:8b      # (implicit pull if missing)
+```
+
 ## 👓 Recommended reading
 
 n8n is full of useful content for getting started quickly with its AI concepts
