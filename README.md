@@ -110,7 +110,7 @@ docker compose create && docker compose --profile cpu up -d
 * ### For Cloud setups:
 
 ```bash
-docker compose --profile cpu pull
+docker compose --profile cloud pull
 docker compose create && docker compose --profile cloud up -d
 ```
 
