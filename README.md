@@ -1,6 +1,6 @@
 # n8n-AI-kit
 
-**n8n-AI-kit** is an open-source template that quickly sets up a local AI environment featuring n8n, Ollama, Qdrant and PostgreSQL.
+**n8n-AI-kit** is an open-source template that quickly sets up a local AI environment featuring n8n, Ollama, Qdrant, PostgreSQL and Cloudflared.
 
 ![n8n.io - Screenshot](assets/n8n-demo.gif)
 
@@ -17,6 +17,9 @@ store with an comprehensive API
 
 ✅ [**PostgreSQL**](https://www.postgresql.org/) -  Workhorse of the Data
 Engineering world, handles large amounts of data safely.
+
+✅ [**Cloudflared**](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) -  Secure reverse proxy
+to access your n8n instance from anywhere.
 
 ### What you can build
 
@@ -90,7 +93,7 @@ For more information on how to access the services, please refer to the table be
 | `postgres`    | postgres | 5432  | Localhost      |
 | `cloudflared` | -/-      | -/-   | -/-            |
 
-### Optional: Expose n8n through Cloudflare Tunnel
+### Expose n8n through Cloudflare Tunnel (optional)
 
 1. [Create a Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/) and add an HTTP route that points to `http://n8n:5678`.
 2. Copy the generated **tunnel token** into your `.env` file as `CLOUDFLARED_TUNNEL_TOKEN`.
@@ -111,21 +114,21 @@ Cloudflared connects directly to Cloudflare’s edge using the `token`, so no ad
 
 ## Upgrading
 
-* ### For Nvidia GPU setups:
+### For Nvidia GPU setups
 
 ```bash
 docker compose --profile gpu-nvidia pull
 docker compose create && docker compose --profile gpu-nvidia up -d
 ```
 
-* ### For CPU-only setups:
+### For CPU-only setups
 
 ```bash
 docker compose --profile cpu pull
 docker compose create && docker compose --profile cpu up -d
 ```
 
-* ### For Cloud setups:
+### For Cloud setups
 
 ```bash
 docker compose --profile cloud pull
