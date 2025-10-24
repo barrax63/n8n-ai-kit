@@ -84,6 +84,21 @@ and [Information Extractor](https://docs.n8n.io/integrations/builtin/cluster-nod
 nodes. To keep everything local, just remember to use the Ollama node for your
 language model and Qdrant as your vector store.
 
+## Containers and access
+
+The kit consits of multiple containers with restricted access.
+For more information on how to access the services, please refer to the table below.
+
+| Container     | Hostname | Port  | Network access |
+|---------------|----------|-------|----------------|
+| `n8n`         | n8n      | 5678  | Network        |
+| `n8n-runners` | -/-      | -/-   | -/-            |
+| `qdrant`      | qdrant   | 6333  | Localhost      |
+| `ollama`      | ollama   | 11434 | Localhost      |
+| `postgres`    | postgres | 5432  | Localhost      |
+
+To make your `n8n` instance available on other networks, use a reverse proxy such as Traefik or Cloudflared.
+
 ## Upgrading
 
 * ### For Nvidia GPU setups:

@@ -14,7 +14,7 @@ x-logging: &default-logging
     max-file: "5"
 
 x-n8n: &service-n8n
-  image: n8nio/n8n:latest
+  image: n8nio/n8n:1.116.2
   networks: ['main']
   restart: unless-stopped
   environment:
@@ -83,7 +83,7 @@ x-n8n: &service-n8n
   logging: *default-logging
 
 x-task-runners: &service-task-runners
-  image: n8nio/runners:latest
+  image: n8nio/runners:1.116.2
   networks: ['main']
   restart: unless-stopped
   environment:
@@ -96,7 +96,7 @@ x-task-runners: &service-task-runners
   logging: *default-logging
 
 x-ollama: &service-ollama
-  image: ollama/ollama:latest
+  image: ollama/ollama:0.12.6
   networks:
     main:
       aliases:
@@ -122,7 +122,7 @@ x-ollama: &service-ollama
 
 # Init job that pulls the desired model defined via the environment
 x-init-ollama: &init-ollama
-  image: ollama/ollama:latest
+  image: ollama/ollama:0.12.6
   networks: ['main']
   volumes:
     - ollama_storage:/root/.ollama
@@ -158,7 +158,7 @@ services:
     logging: *default-logging
 
   qdrant:
-    image: qdrant/qdrant:latest
+    image: qdrant/qdrant:v1.15.5
     hostname: qdrant
     container_name: qdrant
     networks: ['main']
