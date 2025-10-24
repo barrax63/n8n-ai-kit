@@ -6,6 +6,10 @@ volumes:
 
 networks:
   main:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.254.0.0/16
 
 x-logging: &default-logging
   driver: "json-file"
@@ -137,6 +141,7 @@ services:
   postgres:
     image: postgres:16-alpine
     hostname: postgres
+    container_name: postgres
     networks: ['main']
     restart: unless-stopped
     environment:
