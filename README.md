@@ -84,14 +84,14 @@ language model and Qdrant as your vector store.
 The kit consits of multiple containers with restricted access.
 For more information on how to access the services, please refer to the table below.
 
-| Container     | Version     | Hostname | Port  | Network accessibility |
-|---------------|-------------|----------|-------|-----------------------|
-| `n8n`         | `1.116.2`   | n8n      | 5678  | Local host            |
-| `n8n-runners` | `1.116.2`   | -/-      | -/-   | -/-                   |
-| `qdrant`      | `v1.15.5`   | qdrant   | 6333  | Local host            |
-| `ollama`      | `0.12.6`    | ollama   | 11434 | Docker network only   |
-| `postgres`    | `16-alpine` | postgres | 5432  | Docker network only   |
-| `cloudflared` | `latest`    | -/-      | -/-   | -/-                   |
+| Container     | Version     | Hostname | Port  | Network accessible?      |
+|---------------|-------------|----------|-------|--------------------------|
+| `n8n`         | `1.116.2`   | n8n      | 5678  | From host                |
+| `n8n-runners` | `1.116.2`   | -/-      | -/-   | -/-                      |
+| `qdrant`      | `v1.15.5`   | qdrant   | 6333  | From host                |
+| `ollama`      | `0.12.6`    | ollama   | 11434 | From Docker network only |
+| `postgres`    | `16-alpine` | postgres | 5432  | From Docker network only |
+| `cloudflared` | `latest`    | -/-      | -/-   | -/-                      |
 
 ### Expose n8n through Cloudflare Tunnel (optional)
 
