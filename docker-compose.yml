@@ -129,7 +129,7 @@ x-init-ollama: &init-ollama
     - ollama_storage:/root/.ollama
   entrypoint: /bin/sh
   environment:
-    - OLLAMA_HOST=ollama:11434
+    - OLLAMA_HOST=${OLLAMA_HOST}
     - TZ=${TZ}
   command:
     - "-c"
