@@ -256,7 +256,7 @@ services:
         condition: service_completed_successfully
     logging: *default-logging
 
-  # Cloud profile n8n (uses external Ollama, no local provisioning)
+  # Cloud profile n8n (uses external LLM)
   n8n-cloud:
     <<: *service-n8n
     container_name: n8n
