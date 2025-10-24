@@ -30,14 +30,6 @@ Engineering world, handles large amounts of data safely.
 
 ## Installation
 
-### Cloning the Repository
-
-```bash
-git clone https://github.com/barrax63/n8n-ai-kit.git
-cd n8n-ai-kit
-cp .env.example .env # you should update secrets and passwords inside
-```
-
 ### Running n8n using Docker Compose
 
 #### For Nvidia GPU users
@@ -45,7 +37,7 @@ cp .env.example .env # you should update secrets and passwords inside
 ```bash
 git clone https://github.com/barrax63/n8n-ai-kit.git
 cd n8n-ai-kit
-cp .env.example .env # you should update secrets and passwords inside
+cp .env.example .env # you should update the STANDARD CONFIGURATION part inside
 docker compose --profile gpu-nvidia up -d
 ```
 
@@ -58,7 +50,7 @@ docker compose --profile gpu-nvidia up -d
 ```bash
 git clone https://github.com/barrax63/n8n-ai-kit.git
 cd n8n-ai-kit
-cp .env.example .env # you should update secrets and passwords inside
+cp .env.example .env # you should update the STANDARD CONFIGURATION part inside
 docker compose --profile cpu up -d
 ```
 
@@ -67,7 +59,7 @@ docker compose --profile cpu up -d
 ```bash
 git clone https://github.com/barrax63/n8n-ai-kit.git
 cd n8n-ai-kit
-cp .env.example .env # you should update secrets and passwords inside
+cp .env.example .env # you should update the STANDARD CONFIGURATION part inside
 docker compose --profile cloud up -d
 ```
 
