@@ -53,13 +53,22 @@ docker compose --profile gpu-nvidia up -d
 > If you have not used your Nvidia GPU with Docker before, please follow the
 > [Ollama Docker instructions](https://github.com/ollama/ollama/blob/main/docs/docker.md).
 
-#### For everyone else
+#### For CPU-only Users
 
 ```bash
 git clone https://github.com/barrax63/n8n-ai-kit.git
 cd n8n-ai-kit
 cp .env.example .env # you should update secrets and passwords inside
 docker compose --profile cpu up -d
+```
+
+#### For Cloud Users (without Ollama, using external LLMs)
+
+```bash
+git clone https://github.com/barrax63/n8n-ai-kit.git
+cd n8n-ai-kit
+cp .env.example .env # you should update secrets and passwords inside
+docker compose --profile cloud up -d
 ```
 
 ## ⚡️ Quick start and usage
@@ -84,11 +93,18 @@ docker compose --profile gpu-nvidia pull
 docker compose create && docker compose --profile gpu-nvidia up -d
 ```
 
-* ### For Non-GPU setups:
+* ### For CPU-only setups:
 
 ```bash
 docker compose --profile cpu pull
 docker compose create && docker compose --profile cpu up -d
+```
+
+* ### For Cloud setups:
+
+```bash
+docker compose --profile cpu pull
+docker compose create && docker compose --profile cloud up -d
 ```
 
 ## 👓 Recommended reading
