@@ -28,6 +28,7 @@ x-n8n: &service-n8n
     - DB_POSTGRESDB_USER=${POSTGRES_USER}
     - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
     - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
+    - DB_POSTGRESDB_POOL_SIZE=${DB_POSTGRESDB_POOL_SIZE}
 
     # ---- security / production ----
     - NODE_ENV=${NODE_ENV}
@@ -104,8 +105,6 @@ x-ollama: &service-ollama
       aliases:
         - ollama
   restart: unless-stopped
-  ports:
-    - "127.0.0.1:11434:11434"
   volumes:
     - ollama_storage:/root/.ollama
   environment:
