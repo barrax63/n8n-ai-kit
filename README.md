@@ -88,8 +88,26 @@ For more information on how to access the services, please refer to the table be
 | `qdrant`      | qdrant   | 6333  | Localhost      |
 | `ollama`      | ollama   | 11434 | Localhost      |
 | `postgres`    | postgres | 5432  | Localhost      |
+| `cloudflared` | -/-      | -/-   | -/-            |
 
-To make your `n8n` instance available on other networks, use a reverse proxy such as Traefik or Cloudflared.
+### Optional: Expose n8n through Cloudflare Tunnel
+
+1. [Create a Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/) and add an HTTP route that points to `http://n8n:5678`.
+2. Copy the generated **tunnel token** into your `.env` file as `CLOUDFLARED_TUNNEL_TOKEN`.
+3. Start Cloudflared alongside your preferred n8n profile:
+
+   ```bash
+   # CPU profile
+   docker compose --profile cpu --profile cloudflared up -d
+
+   # GPU profile
+   docker compose --profile gpu-nvidia --profile cloudflared up -d
+
+   # Cloud profile (external LLM)
+   docker compose --profile cloud --profile cloudflared up -d
+   ```
+
+Cloudflared connects directly to Cloudflare’s edge using the `token`, so no additional configuration files are required.
 
 ## Upgrading
 

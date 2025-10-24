@@ -300,3 +300,25 @@ services:
     depends_on:
       n8n-cloud:
         condition: service_healthy
+
+  # ---- Cloudflare reverse proxy ----
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    profiles: ["cloudflared"]
+    networks: ['main']
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARED_TUNNEL_TOKEN}
+    command: tunnel --no-autoupdate run
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:8080/ready || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    logging: *default-logging
