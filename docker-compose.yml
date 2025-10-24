@@ -78,7 +78,7 @@ x-n8n: &service-n8n
     - path: .env
       required: true
   healthcheck:
-    test: ["CMD", "wget", "-qO-", "http://localhost:5678/healthz"]
+    test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5678/healthz"]
     interval: 10s
     timeout: 5s
     retries: 30
@@ -175,7 +175,7 @@ services:
     volumes:
       - qdrant_storage:/qdrant/storage
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:6333/readyz || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:6333/readyz || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -227,7 +227,7 @@ services:
     profiles: ["gpu-nvidia"]
     hostname: n8n
     ports:
-      - "0.0.0.0:5678:5678"
+      - "127.0.0.1:5678:5678"
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./shared:/data/shared
@@ -248,7 +248,7 @@ services:
     profiles: ["cpu"]
     hostname: n8n
     ports:
-      - "0.0.0.0:5678:5678"
+      - "127.0.0.1:5678:5678"
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./shared:/data/shared
@@ -269,7 +269,7 @@ services:
     profiles: ["cloud"]
     hostname: n8n
     ports:
-      - "0.0.0.0:5678:5678"
+      - "127.0.0.1:5678:5678"
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./shared:/data/shared
