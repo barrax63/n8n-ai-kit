@@ -100,6 +100,11 @@ x-task-runners: &service-task-runners
   env_file:
     - path: .env
       required: true
+  healthcheck:
+    test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5680/healthz"]
+    interval: 10s
+    timeout: 5s
+    retries: 30
   logging: *default-logging
 
 x-ollama: &service-ollama
@@ -179,7 +184,7 @@ services:
     volumes:
       - qdrant_storage:/qdrant/storage
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:6333/readyz || exit 1"]
+      test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/6333' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -321,9 +326,9 @@ services:
         required: true
     environment:
       - TUNNEL_TOKEN=${CLOUDFLARED_TUNNEL_TOKEN}
-    command: tunnel --no-autoupdate run
+    command: tunnel --metrics 127.0.0.1:60123 --no-autoupdate run
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:8080/ready || exit 1"]
+      test: ["CMD", "cloudflared", "tunnel", "--metrics", "127.0.0.1:60123", "ready"]
       interval: 30s
       timeout: 5s
       retries: 5
