@@ -9,7 +9,7 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 10.254.0.0/16
+        - subnet: 10.254.0.0/24
 
 x-logging: &default-logging
   driver: "json-file"
@@ -17,8 +17,16 @@ x-logging: &default-logging
     max-size: "10m"
     max-file: "5"
 
+x-security-baseline: &security-baseline
+  security_opt:
+    - no-new-privileges:true
+    - apparmor=docker-default
+  cap_drop:
+    - ALL
+
 x-n8n: &service-n8n
-  image: n8nio/n8n:1.116.2
+  <<: *security-baseline
+  image: n8nio/n8n:latest
   networks: ['main']
   restart: unless-stopped
   environment:
@@ -79,6 +87,10 @@ x-n8n: &service-n8n
 
     # ---- timezone ----
     - TZ=${TZ}
+  cap_add:
+    - CHOWN
+    - SETGID
+    - SETUID
   env_file:
     - path: .env
       required: true
@@ -86,17 +98,31 @@ x-n8n: &service-n8n
     test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5678/healthz"]
     interval: 10s
     timeout: 5s
-    retries: 30
+    retries: 10
+    start_period: 30s
+  deploy:
+    resources:
+      limits:
+        cpus: '2.0'
+        memory: 2G
+      reservations:
+        cpus: '0.5'
+        memory: 512M
   logging: *default-logging
 
 x-task-runners: &service-task-runners
-  image: n8nio/runners:1.116.2
+  <<: *security-baseline
+  image: n8nio/runners:latest
   networks: ['main']
   restart: unless-stopped
   environment:
     - N8N_RUNNERS_TASK_BROKER_URI=http://n8n:5679
     - N8N_RUNNERS_AUTH_TOKEN=${N8N_RUNNERS_AUTH_TOKEN}
     - N8N_RUNNERS_AUTO_SHUTDOWN_TIMEOUT=${N8N_RUNNERS_AUTO_SHUTDOWN_TIMEOUT}
+  cap_add:
+    - CHOWN
+    - SETGID
+    - SETUID
   env_file:
     - path: .env
       required: true
@@ -104,11 +130,20 @@ x-task-runners: &service-task-runners
     test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5680/healthz"]
     interval: 10s
     timeout: 5s
-    retries: 30
+    retries: 10
+    start_period: 10s
+  deploy:
+    resources:
+      limits:
+        cpus: '2.0'
+        memory: 2G
+      reservations:
+        cpus: '0.5'
+        memory: 512M
   logging: *default-logging
 
 x-ollama: &service-ollama
-  image: ollama/ollama:0.12.6
+  image: ollama/ollama:latest
   networks:
     main:
       aliases:
@@ -128,12 +163,13 @@ x-ollama: &service-ollama
     test: ["CMD", "ollama", "list"]
     interval: 10s
     timeout: 5s
-    retries: 20
+    retries: 10
+    start_period: 15s
   logging: *default-logging
 
 # Init job that pulls the desired model defined via the environment
 x-init-ollama: &init-ollama
-  image: ollama/ollama:0.12.6
+  image: ollama/ollama:latest
   networks: ['main']
   volumes:
     - ollama_storage:/root/.ollama
@@ -141,6 +177,13 @@ x-init-ollama: &init-ollama
   environment:
     - OLLAMA_HOST=${OLLAMA_HOST}
     - TZ=${TZ}
+  security_opt:
+    - no-new-privileges:true
+    - apparmor=docker-default
+  cap_drop:
+    - ALL
+  cap_add:
+    - CHOWN
   command:
     - "-c"
     - "sleep 3; ollama pull ${OLLAMA_DEFAULT_MODEL}"
@@ -148,11 +191,13 @@ x-init-ollama: &init-ollama
 
 services:
   postgres:
+    <<: *security-baseline
     image: postgres:16-alpine
     hostname: postgres
     container_name: postgres
     networks: ['main']
     restart: unless-stopped
+    user: "postgres"
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -160,17 +205,33 @@ services:
       - TZ=${TZ}
       - PGTZ=${TZ}
       - POSTGRES_INITDB_ARGS=--data-checksums
+    cap_add:
+      - CHOWN
+      - FOWNER
+      - SETGID
+      - SETUID
     volumes:
       - postgres_storage:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -t 1 -q']
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 10s
+    shm_size: '256mb'
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
     logging: *default-logging
 
   qdrant:
-    image: qdrant/qdrant:v1.15.5
+    <<: *security-baseline
+    image: qdrant/qdrant:latest
     hostname: qdrant
     container_name: qdrant
     networks: ['main']
@@ -187,7 +248,16 @@ services:
       test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/6333' || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 20
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
     logging: *default-logging
 
   # ---- OLLAMA VARIANTS ----
@@ -197,15 +267,48 @@ services:
     profiles: ["cpu"]
     <<: *service-ollama
     container_name: ollama
+    security_opt:
+      - no-new-privileges:true
+      - apparmor=docker-default
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
 
   # NVIDIA GPU (target)
   ollama-gpu:
     profiles: ["gpu-nvidia"]
     <<: *service-ollama
     container_name: ollama
+    security_opt:
+      - no-new-privileges:true
+      - apparmor=docker-default
+    cap_drop:
+      - SYS_ADMIN
+      - NET_ADMIN
+      - SYS_MODULE
+      - SYS_PTRACE
+      - SYS_BOOT
+      - MAC_ADMIN
+      - MAC_OVERRIDE
     deploy:
       resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
         reservations:
+          cpus: '1.0'
+          memory: 1G
           devices:
             - driver: nvidia
               count: 1
@@ -316,6 +419,7 @@ services:
   # ---- Cloudflare reverse proxy ----
 
   cloudflared:
+    <<: *security-baseline
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
     profiles: ["cloudflared"]
@@ -326,11 +430,22 @@ services:
         required: true
     environment:
       - TUNNEL_TOKEN=${CLOUDFLARED_TUNNEL_TOKEN}
+    read_only: true
+    tmpfs:
+      - /tmp
     command: tunnel --metrics 127.0.0.1:60123 --no-autoupdate run
     healthcheck:
       test: ["CMD", "cloudflared", "tunnel", "--metrics", "127.0.0.1:60123", "ready"]
-      interval: 30s
+      interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
       start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
     logging: *default-logging

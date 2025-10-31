@@ -86,10 +86,10 @@ For more information on how to access the services, please refer to the table be
 
 | Container     | Version     | Hostname | Port  | Network accessible?      |
 |---------------|-------------|----------|-------|--------------------------|
-| `n8n`         | `1.116.2`   | n8n      | 5678  | From host                |
-| `n8n-runners` | `1.116.2`   | -/-      | -/-   | -/-                      |
-| `qdrant`      | `v1.15.5`   | qdrant   | 6333  | From host                |
-| `ollama`      | `0.12.6`    | ollama   | 11434 | From Docker network only |
+| `n8n`         | `latest`    | n8n      | 5678  | From host                |
+| `n8n-runners` | `latest`    | -/-      | -/-   | -/-                      |
+| `qdrant`      | `latest`    | qdrant   | 6333  | From host                |
+| `ollama`      | `latest`    | ollama   | 11434 | From Docker network only |
 | `postgres`    | `16-alpine` | postgres | 5432  | From Docker network only |
 | `cloudflared` | `latest`    | -/-      | -/-   | -/-                      |
 
@@ -117,22 +117,22 @@ Cloudflared connects directly to Cloudflare’s edge using the `token`, so no ad
 ### For Nvidia GPU setups
 
 ```bash
-docker compose --profile gpu-nvidia pull
-docker compose create && docker compose --profile gpu-nvidia up -d
+git pull
+docker compose --profile gpu-nvidia --profile cloudflared up -d
 ```
 
 ### For CPU-only setups
 
 ```bash
-docker compose --profile cpu pull
-docker compose create && docker compose --profile cpu up -d
+git pull
+docker compose --profile cpu --profile cloudflared up -d
 ```
 
 ### For Cloud setups
 
 ```bash
-docker compose --profile cloud pull
-docker compose create && docker compose --profile cloud up -d
+git pull
+docker compose --profile cloud --profile cloudflared up -d
 ```
 
 ### Subsequently adding a new LLM to Ollama
