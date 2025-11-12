@@ -118,21 +118,21 @@ Cloudflared connects directly to Cloudflare’s edge using the `token`, so no ad
 
 ```bash
 git pull
-docker compose --profile gpu-nvidia --profile cloudflared up -d
+docker compose --profile gpu-nvidia --profile cloudflared up -d --pull always
 ```
 
 ### For CPU-only setups
 
 ```bash
 git pull
-docker compose --profile cpu --profile cloudflared up -d
+docker compose --profile cpu --profile cloudflared up -d --pull always
 ```
 
 ### For Cloud setups
 
 ```bash
 git pull
-docker compose --profile cloud --profile cloudflared up -d
+docker compose --profile cloud --profile cloudflared up -d --pull always
 ```
 
 ### Subsequently adding a new LLM to Ollama
@@ -143,6 +143,21 @@ ollama list                 # see what’s installed
 ollama pull llama3.1:8b     # add a new model
 ollama pull gemma3:4b
 ollama run llama3.1:8b      # (implicit pull if missing)
+```
+
+### Enable auto-updates
+
+You can enable auto updates by adding one of the above commands to a crontab. Run:
+
+```bash
+crontab -u <USER> -e
+```
+
+Add this entry:
+
+```bash
+# Every Sunday at 00:00 run git pull and compose up with pull-always (for profiles cloud and cloudflared)
+0 0 * * 0 cd /home/<USER>/n8n-ai-kit && /usr/bin/git pull && /usr/bin/docker compose --profile cloud --profile cloudflared up -d --pull always >> /home/<USER>/n8n-ai-kit/cron.log 2>&1
 ```
 
 ## 👓 Recommended reading
