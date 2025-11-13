@@ -196,7 +196,6 @@ services:
     <<: *security-baseline
     image: postgres:16-alpine
     hostname: postgres
-    container_name: postgres
     networks: ['main']
     restart: unless-stopped
     user: "postgres"
@@ -236,7 +235,6 @@ services:
     <<: *security-baseline
     image: qdrant/qdrant:latest
     hostname: qdrant
-    container_name: qdrant
     networks: ['main']
     restart: unless-stopped
     ports:
@@ -269,7 +267,6 @@ services:
   ollama-cpu:
     profiles: ["cpu"]
     <<: *service-ollama
-    container_name: ollama
     security_opt:
       - no-new-privileges:true
       - apparmor=docker-default
@@ -292,7 +289,6 @@ services:
   ollama-gpu:
     profiles: ["gpu-nvidia"]
     <<: *service-ollama
-    container_name: ollama
     security_opt:
       - no-new-privileges:true
       - apparmor=docker-default
@@ -338,7 +334,6 @@ services:
   # GPU profile n8n
   n8n-gpu:
     <<: *service-n8n
-    container_name: n8n
     profiles: ["gpu-nvidia"]
     hostname: n8n
     ports:
@@ -359,7 +354,6 @@ services:
   # CPU profile n8n
   n8n-cpu:
     <<: *service-n8n
-    container_name: n8n
     profiles: ["cpu"]
     hostname: n8n
     ports:
@@ -380,7 +374,6 @@ services:
   # Cloud profile n8n (uses external LLM)
   n8n-cloud:
     <<: *service-n8n
-    container_name: n8n
     profiles: ["cloud"]
     hostname: n8n
     ports:
@@ -397,7 +390,6 @@ services:
 
   task-runners-gpu:
     <<: *service-task-runners
-    container_name: n8n-runners
     profiles: ["gpu-nvidia"]
     depends_on:
       n8n-gpu:
@@ -405,7 +397,6 @@ services:
 
   task-runners-cpu:
     <<: *service-task-runners
-    container_name: n8n-runners
     profiles: ["cpu"]
     depends_on:
       n8n-cpu:
@@ -413,7 +404,6 @@ services:
 
   task-runners-cloud:
     <<: *service-task-runners
-    container_name: n8n-runners
     profiles: ["cloud"]
     depends_on:
       n8n-cloud:
@@ -424,7 +414,6 @@ services:
   cloudflared:
     <<: *security-baseline
     image: cloudflare/cloudflared:latest
-    container_name: cloudflared
     profiles: ["cloudflared"]
     networks: ['main']
     restart: unless-stopped
