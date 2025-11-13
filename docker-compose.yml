@@ -1,3 +1,5 @@
+name: n8n-ai-kit
+
 volumes:
   n8n_storage:
   postgres_storage:
@@ -230,6 +232,7 @@ services:
     logging: *default-logging
 
   qdrant:
+    profiles: ["qdrant"]
     <<: *security-baseline
     image: qdrant/qdrant:latest
     hostname: qdrant

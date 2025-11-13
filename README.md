@@ -112,6 +112,21 @@ For more information on how to access the services, please refer to the table be
 
 Cloudflared connects directly to Cloudflare’s edge using the `token`, so no additional configuration files are required.
 
+### Use Qdrant vector store (optional)
+
+Start Qdrant alongside your preferred n8n profile:
+
+   ```bash
+   # CPU profile
+   docker compose --profile cpu --profile qdrant up -d
+
+   # GPU profile
+   docker compose --profile gpu-nvidia --profile qdrant up -d
+
+   # Cloud profile (external LLM)
+   docker compose --profile cloud --profile qdrant up -d
+   ```
+
 ## Upgrading
 
 ### For Nvidia GPU setups
