@@ -1,6 +1,6 @@
 # n8n-AI-kit
 
-**n8n-AI-kit** is an open-source template that quickly sets up a local AI environment featuring n8n, Ollama, Qdrant, PostgreSQL and Cloudflared.
+**n8n-AI-kit** is an open-source template that quickly sets up a local AI environment featuring n8n, Ollama, PostgreSQL (pgvector) and Cloudflared.
 
 ![n8n.io - Screenshot](assets/n8n-demo.gif)
 
@@ -12,11 +12,8 @@ integrations and advanced AI components
 ✅ [**Ollama**](https://ollama.com/) - Cross-platform LLM platform to install
 and run the latest local LLMs
 
-✅ [**Qdrant**](https://qdrant.tech/) - Open-source, high performance vector
-store with an comprehensive API
-
 ✅ [**PostgreSQL**](https://www.postgresql.org/) -  Workhorse of the Data
-Engineering world, handles large amounts of data safely.
+Engineering world, handles large amounts of data safely - including vector extension.
 
 ✅ [**Cloudflared**](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) -  Secure reverse proxy
 to access your n8n instance from anywhere.
@@ -77,7 +74,7 @@ suite of basic and advanced AI nodes such as
 [Text classifier](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.text-classifier/),
 and [Information Extractor](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.information-extractor/)
 nodes. To keep everything local, just remember to use the Ollama node for your
-language model and Qdrant as your vector store.
+language model and pgvector as your vector store.
 
 ## Containers and access
 
@@ -88,9 +85,8 @@ For more information on how to access the services, please refer to the table be
 |---------------|-------------|----------|-------|--------------------------|
 | `n8n`         | `latest`    | n8n      | 5678  | From host                |
 | `n8n-runners` | `latest`    | -/-      | -/-   | -/-                      |
-| `qdrant`      | `latest`    | qdrant   | 6333  | From host                |
 | `ollama`      | `latest`    | ollama   | 11434 | From Docker network only |
-| `postgres`    | `16-alpine` | postgres | 5432  | From Docker network only |
+| `pgvector`    | `pg16`      | postgres | 5432  | From Docker network only |
 | `cloudflared` | `latest`    | -/-      | -/-   | -/-                      |
 
 ### Expose n8n through Cloudflare Tunnel (optional)
@@ -111,21 +107,6 @@ For more information on how to access the services, please refer to the table be
    ```
 
 Cloudflared connects directly to Cloudflare’s edge using the `token`, so no additional configuration files are required.
-
-### Use Qdrant vector store (optional)
-
-Start Qdrant alongside your preferred n8n profile:
-
-   ```bash
-   # CPU profile
-   docker compose --profile cpu --profile qdrant up -d
-
-   # GPU profile
-   docker compose --profile gpu-nvidia --profile qdrant up -d
-
-   # Cloud profile (external LLM)
-   docker compose --profile cloud --profile qdrant up -d
-   ```
 
 ## Upgrading
 
@@ -189,29 +170,6 @@ and nodes. If you run into an issue, go to [support](#support).
 ## 🎥 Video walkthrough
 
 - [Installing and using Local AI for n8n](https://www.youtube.com/watch?v=xz_X2N-hPg0)
-
-## 🛍️ More AI templates
-
-For more AI workflow ideas, visit the [**official n8n AI template
-gallery**](https://n8n.io/workflows/categories/ai/). From each workflow,
-select the **Use workflow** button to automatically import the workflow into
-your local n8n instance.
-
-### Learn AI key concepts
-
-- [AI Agent Chat](https://n8n.io/workflows/1954-ai-agent-chat/)
-- [AI chat with any data source (using the n8n workflow too)](https://n8n.io/workflows/2026-ai-chat-with-any-data-source-using-the-n8n-workflow-tool/)
-- [Chat with OpenAI Assistant (by adding a memory)](https://n8n.io/workflows/2098-chat-with-openai-assistant-by-adding-a-memory/)
-- [Use an open-source LLM (via Hugging Face)](https://n8n.io/workflows/1980-use-an-open-source-llm-via-huggingface/)
-- [Chat with PDF docs using AI (quoting sources)](https://n8n.io/workflows/2165-chat-with-pdf-docs-using-ai-quoting-sources/)
-- [AI agent that can scrape webpages](https://n8n.io/workflows/2006-ai-agent-that-can-scrape-webpages/)
-
-### Local AI templates
-
-- [Tax Code Assistant](https://n8n.io/workflows/2341-build-a-tax-code-assistant-with-qdrant-mistralai-and-openai/)
-- [Breakdown Documents into Study Notes with MistralAI and Qdrant](https://n8n.io/workflows/2339-breakdown-documents-into-study-notes-using-templating-mistralai-and-qdrant/)
-- [Financial Documents Assistant using Qdrant and](https://n8n.io/workflows/2335-build-a-financial-documents-assistant-using-qdrant-and-mistralai/) [Mistral.ai](http://mistral.ai/)
-- [Recipe Recommendations with Qdrant and Mistral](https://n8n.io/workflows/2333-recipe-recommendations-with-qdrant-and-mistral/)
 
 ## Tips & tricks
 
