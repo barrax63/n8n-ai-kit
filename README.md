@@ -81,13 +81,13 @@ language model and pgvector as your vector store.
 The kit consits of multiple containers with restricted access.
 For more information on how to access the services, please refer to the table below.
 
-| Container     | Version     | Hostname | Port  | Network accessible?      |
-|---------------|-------------|----------|-------|--------------------------|
-| `n8n`         | `latest`    | n8n      | 5678  | From host                |
-| `n8n-runners` | `latest`    | -/-      | -/-   | -/-                      |
-| `ollama`      | `latest`    | ollama   | 11434 | From Docker network only |
-| `pgvector`    | `pg16`      | postgres | 5432  | From Docker network only |
-| `cloudflared` | `latest`    | -/-      | -/-   | -/-                      |
+| Container     | Version     | Hostname | Port  | Network accessible?             |
+|---------------|-------------|----------|-------|---------------------------------|
+| `n8n`         | `latest`    | n8n      | 5678  | From host (without cloudflared) |
+| `n8n-runners` | `latest`    | -/-      | -/-   | -/-                             |
+| `ollama`      | `latest`    | ollama   | 11434 | From Docker network only        |
+| `pgvector`    | `pg16`      | postgres | 5432  | From Docker network only        |
+| `cloudflared` | `latest`    | -/-      | -/-   | -/-                             |
 
 ### Expose n8n through Cloudflare Tunnel (optional)
 

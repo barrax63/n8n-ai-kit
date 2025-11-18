@@ -306,8 +306,9 @@ services:
     <<: *service-n8n
     profiles: ["gpu-nvidia"]
     hostname: n8n
-    ports:
-      - "127.0.0.1:5678:5678"
+# uncomment if you don't use cloudflared.
+#    ports:
+#      - "127.0.0.1:5678:5678"
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./shared:/data/shared
@@ -326,8 +327,9 @@ services:
     <<: *service-n8n
     profiles: ["cpu"]
     hostname: n8n
-    ports:
-      - "127.0.0.1:5678:5678"
+# uncomment if you don't use cloudflared.
+#    ports:
+#      - "127.0.0.1:5678:5678"
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./shared:/data/shared
@@ -346,8 +348,9 @@ services:
     <<: *service-n8n
     profiles: ["cloud"]
     hostname: n8n
-    ports:
-      - "127.0.0.1:5678:5678"
+# uncomment if you don't use cloudflared.
+#    ports:
+#      - "127.0.0.1:5678:5678"
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./shared:/data/shared
