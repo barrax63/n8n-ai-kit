@@ -105,11 +105,11 @@ x-n8n: &service-n8n
   deploy:
     resources:
       limits:
-        cpus: '2.0'
+        cpus: '1.0'
         memory: 2G
       reservations:
         cpus: '0.5'
-        memory: 512M
+        memory: 1G
   logging: *default-logging
 
 x-task-runners: &service-task-runners
@@ -137,11 +137,11 @@ x-task-runners: &service-task-runners
   deploy:
     resources:
       limits:
-        cpus: '2.0'
-        memory: 2G
-      reservations:
         cpus: '0.5'
         memory: 512M
+      reservations:
+        cpus: '0.25'
+        memory: 256M
   logging: *default-logging
 
 x-ollama: &service-ollama
@@ -227,8 +227,8 @@ services:
           cpus: '2.0'
           memory: 4G
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          cpus: '1.0'
+          memory: 2G
     logging: *default-logging
 
   # ---- OLLAMA VARIANTS ----
@@ -408,9 +408,9 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
-        reservations:
           cpus: '0.5'
           memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
     logging: *default-logging
