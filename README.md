@@ -63,6 +63,18 @@ cp .env.example .env # you should update the STANDARD CONFIGURATION part inside
 docker compose --profile cloud up -d
 ```
 
+#### (Optional) Create shared network
+
+Sometimes n8n needs access to services on other docker stacks.
+For this purpose, add the shared network if not already done:
+```bash
+docker network create \
+  --driver bridge \
+  --subnet 10.254.100.0/24 \
+  --opt com.docker.network.bridge.name=br-shared \
+  shared-services
+```
+
 ## ⚡️ Quick start and usage
 
 The core of the n8n-AI-kit is a Docker Compose file, pre-configured with network and storage settings, minimizing the need for additional installations.

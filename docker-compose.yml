@@ -12,6 +12,9 @@ networks:
     ipam:
       config:
         - subnet: 10.254.0.0/24
+  shared:
+    external: true
+    name: shared-services
 
 x-logging: &default-logging
   driver: "json-file"
@@ -29,7 +32,9 @@ x-security-baseline: &security-baseline
 x-n8n: &service-n8n
   <<: *security-baseline
   image: n8nio/n8n:latest
-  networks: ['main']
+  networks:
+    - main
+    - shared
   restart: unless-stopped
   environment:
     # ---- database ----
