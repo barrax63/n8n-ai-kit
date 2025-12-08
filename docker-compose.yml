@@ -36,72 +36,22 @@ x-n8n: &service-n8n
     - main
     - shared
   restart: unless-stopped
+  env_file:
+    - path: .env
+      required: true
   environment:
     # ---- database ----
     - DB_TYPE=postgresdb
     - DB_POSTGRESDB_HOST=postgres
-    - DB_POSTGRESDB_USER=${POSTGRES_USER}
-    - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
-    - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
-    - DB_POSTGRESDB_POOL_SIZE=${DB_POSTGRESDB_POOL_SIZE}
-
-    # ---- security / production ----
-    - NODE_ENV=${NODE_ENV}
-    - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
-    - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_USER_MANAGEMENT_JWT_SECRET}
-    - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE}
-    - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=${N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS}
-    - N8N_PERSONALIZATION_ENABLED=${N8N_PERSONALIZATION_ENABLED}
-    - N8N_PUBLIC_API_DISABLED=${N8N_PUBLIC_API_DISABLED}
-    - N8N_PUBLIC_API_SWAGGERUI_DISABLED=${N8N_PUBLIC_API_SWAGGERUI_DISABLED}
-    - N8N_DIAGNOSTICS_ENABLED=${N8N_DIAGNOSTICS_ENABLED}
-    - N8N_VERSION_NOTIFICATIONS_ENABLED=${N8N_VERSION_NOTIFICATIONS_ENABLED}
-    - N8N_TEMPLATES_ENABLED=${N8N_TEMPLATES_ENABLED}
-    - EXTERNAL_FRONTEND_HOOKS_URLS=${EXTERNAL_FRONTEND_HOOKS_URLS}
-    - N8N_DIAGNOSTICS_CONFIG_FRONTEND=${N8N_DIAGNOSTICS_CONFIG_FRONTEND}
-    - N8N_DIAGNOSTICS_CONFIG_BACKEND=${N8N_DIAGNOSTICS_CONFIG_BACKEND}
-    - N8N_BLOCK_ENV_ACCESS_IN_NODE=${N8N_BLOCK_ENV_ACCESS_IN_NODE}
-
-    # ---- package policy / excluded nodes ----
-    - N8N_COMMUNITY_PACKAGES_ENABLED=${N8N_COMMUNITY_PACKAGES_ENABLED}
-    - NODES_EXCLUDE=${NODES_EXCLUDE}
-
     # ---- external task runners ----
-    - N8N_RUNNERS_ENABLED=${N8N_RUNNERS_ENABLED}
-    - N8N_RUNNERS_MODE=${N8N_RUNNERS_MODE}
-    - N8N_RUNNERS_AUTH_TOKEN=${N8N_RUNNERS_AUTH_TOKEN}
     - N8N_RUNNERS_BROKER_LISTEN_ADDRESS=0.0.0.0
-    - N8N_NATIVE_PYTHON_RUNNER=${N8N_NATIVE_PYTHON_RUNNER}
-
     # ---- URLs (behind reverse proxy) ----
-    - N8N_HOST=${N8N_HOST}
-    - N8N_PROTOCOL=${N8N_PROTOCOL}
     - WEBHOOK_URL=https://${N8N_HOST}/
     - N8N_EDITOR_BASE_URL=https://${N8N_HOST}/
-    - N8N_PROXY_HOPS=${N8N_PROXY_HOPS}
-
-    # ---- execution retention (prune to keep DB small) ----
-    - EXECUTIONS_DATA_SAVE_ON_ERROR=${EXECUTIONS_DATA_SAVE_ON_ERROR}
-    - EXECUTIONS_DATA_SAVE_ON_SUCCESS=${EXECUTIONS_DATA_SAVE_ON_SUCCESS}
-    - EXECUTIONS_DATA_PRUNE=${EXECUTIONS_DATA_PRUNE}
-    - EXECUTIONS_DATA_MAX_AGE=${EXECUTIONS_DATA_MAX_AGE}
-    - EXECUTIONS_DATA_PRUNE_MAX_COUNT=${EXECUTIONS_DATA_PRUNE_MAX_COUNT}
-
-    # ---- binary data mode (optional) ----
-    - N8N_DEFAULT_BINARY_DATA_MODE=${N8N_DEFAULT_BINARY_DATA_MODE}
-
-    # ---- Ollama endpoint ----
-    - OLLAMA_HOST=${OLLAMA_HOST}
-
-    # ---- timezone ----
-    - TZ=${TZ}
   cap_add:
     - CHOWN
     - SETGID
     - SETUID
-  env_file:
-    - path: .env
-      required: true
   healthcheck:
     test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5678/healthz"]
     interval: 10s
@@ -123,17 +73,15 @@ x-task-runners: &service-task-runners
   image: n8nio/runners:latest
   networks: ['main']
   restart: unless-stopped
+  env_file:
+    - path: .env
+      required: true
   environment:
     - N8N_RUNNERS_TASK_BROKER_URI=http://n8n:5679
-    - N8N_RUNNERS_AUTH_TOKEN=${N8N_RUNNERS_AUTH_TOKEN}
-    - N8N_RUNNERS_AUTO_SHUTDOWN_TIMEOUT=${N8N_RUNNERS_AUTO_SHUTDOWN_TIMEOUT}
   cap_add:
     - CHOWN
     - SETGID
     - SETUID
-  env_file:
-    - path: .env
-      required: true
   healthcheck:
     test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5680/healthz"]
     interval: 10s
@@ -159,14 +107,9 @@ x-ollama: &service-ollama
   restart: unless-stopped
   volumes:
     - ollama_storage:/root/.ollama
-  environment:
-    - OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE}
-    - OLLAMA_NUM_PARALLEL=${OLLAMA_NUM_PARALLEL}
-    - OLLAMA_KV_CACHE_TYPE=${OLLAMA_KV_CACHE_TYPE}
-    - OLLAMA_CONTEXT_LENGTH=${OLLAMA_CONTEXT_LENGTH}
-    - OLLAMA_FLASH_ATTENTION=${OLLAMA_FLASH_ATTENTION}
-#    - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}
-    - TZ=${TZ}
+  env_file:
+    - path: .env
+      required: true
   healthcheck:
     test: ["CMD", "ollama", "list"]
     interval: 10s
@@ -182,9 +125,9 @@ x-init-ollama: &init-ollama
   volumes:
     - ollama_storage:/root/.ollama
   entrypoint: /bin/sh
-  environment:
-    - OLLAMA_HOST=${OLLAMA_HOST}
-    - TZ=${TZ}
+  env_file:
+    - path: .env
+      required: true
   security_opt:
     - no-new-privileges:true
     - apparmor=docker-default
@@ -205,11 +148,10 @@ services:
     networks: ['main']
     restart: unless-stopped
     user: "postgres"
+    env_file:
+      - path: .env
+        required: true
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - TZ=${TZ}
       - PGTZ=${TZ}
       - POSTGRES_INITDB_ARGS=--data-checksums
     cap_add:
@@ -396,9 +338,6 @@ services:
     profiles: ["cloudflared"]
     networks: ['main']
     restart: unless-stopped
-    env_file:
-      - path: .env
-        required: true
     environment:
       - TUNNEL_TOKEN=${CLOUDFLARED_TUNNEL_TOKEN}
     read_only: true
