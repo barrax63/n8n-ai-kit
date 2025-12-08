@@ -51,6 +51,8 @@ x-n8n: &service-n8n
     # ---- URLs (behind reverse proxy) ----
     - WEBHOOK_URL=https://${N8N_HOST}/
     - N8N_EDITOR_BASE_URL=https://${N8N_HOST}/
+    # ---- timezone ----
+    - GENERIC_TIMEZONE=${TZ}
   cap_add:
     - CHOWN
     - SETGID
