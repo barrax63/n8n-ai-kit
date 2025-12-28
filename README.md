@@ -70,7 +70,8 @@ For this purpose, add the shared network if not already done:
 ```bash
 docker network create \
   --driver bridge \
-  --subnet 10.254.100.0/24 \
+  --subnet 192.168.202.0/24 \
+  --gateway 192.168.202.1 \
   --opt com.docker.network.bridge.name=br-shared \
   shared-services
 ```
