@@ -9,9 +9,6 @@ volumes:
 networks:
   main:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 10.254.0.0/24
   shared:
     external: true
     name: shared-services
