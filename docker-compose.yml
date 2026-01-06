@@ -31,7 +31,7 @@ x-security-baseline: &security-baseline
 
 x-n8n: &service-n8n
   <<: *security-baseline
-  image: n8nio/n8n:latest
+  image: n8nio/n8n:stable
   networks:
     - main
     - shared
@@ -75,7 +75,7 @@ x-n8n: &service-n8n
 
 x-task-runners: &service-task-runners
   <<: *security-baseline
-  image: n8nio/runners:latest
+  image: n8nio/runners:stable
   networks: ['main']
   restart: unless-stopped
   env_file:
